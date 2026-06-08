@@ -118,27 +118,23 @@
 
 ### 1. Сервер (Python)
 
+Убедитесь, что установлен **Python 3.10+**.
+
 ```bash
 # Клонировать репозиторий
-git clone https://github.com/your-username/APK-SPPR.git
-cd APK-SPPR
-
-# Создать и активировать виртуальное окружение
-python -m venv ai_env
-# Windows:
-ai_env\Scripts\activate
-# Linux / macOS:
-source ai_env/bin/activate
+git clone https://github.com/miseriezz/apk-sppr.git
+cd apk-sppr
 
 # Установить зависимости
 pip install -r requirements.txt
 ```
 
-Отредактировать блок **КОНФИГУРАЦИЯ** в начале `server.py`:
+Откройте `server.py` и заполните блок **КОНФИГУРАЦИЯ** в самом начале файла:
 
 ```python
-OPENAI_API_KEY = "YOUR_API_KEY_HERE"   # ← вставить свой ключ
+OPENAI_API_KEY = "YOUR_API_KEY_HERE"   # ← ваш ключ OpenAI или ProxyAPI
 LOCAL_IP = "192.168.1.100"             # ← IP этого компьютера в локальной сети
+                                        #   (узнать: ipconfig → IPv4-адрес)
 ```
 
 ```bash
@@ -146,50 +142,60 @@ LOCAL_IP = "192.168.1.100"             # ← IP этого компьютера 
 python server.py
 ```
 
-Сервер будет доступен на `http://localhost:8000`.
-Веб-панель: `http://localhost:8000/dashboard`.
+Сервер запустится на `http://0.0.0.0:8000` и будет доступен всем устройствам в локальной сети.
 
-### 2. Прошивка ESP32 (Arduino IDE)
+### 2. Веб-панель управления
 
-1. Установите поддержку плат **ESP32** версии 3.x через Boards Manager.
-2. Установите библиотеки через Library Manager:
-   * **ArduinoJson** — разбор JSON-ответа сервера.
-   * **Adafruit NeoPixel** — управление RGB-светодиодом.
-   * Аудиобиблиотеки из папки `src/` скопируйте в директорию `libraries` Arduino IDE.
-3. Откройте `examples/chat_local/chat_local.ino`.
-4. Укажите параметры сети:
+После запуска сервера откройте в браузере:
+
+| Адрес                            | Назначение                                                   |
+| :------------------------------------ | :--------------------------------------------------------------------- |
+| `http://<LOCAL_IP>:8000/dashboard`  | История диалогов с AI, очистка логов       |
+| `http://<LOCAL_IP>:8000/monitoring` | Логи ESP32-устройства в реальном времени |
+
+### 3. Прошивка ESP32 (Arduino IDE)
+
+1. Установите поддержку плат **ESP32** версии 3.x через **Boards Manager** (`espressif:esp32`).
+2. Установите библиотеки через **Library Manager**:
+   - **ArduinoJson** — разбор JSON-ответа сервера.
+   - **Adafruit NeoPixel** — управление RGB-светодиодом.
+3. Скопируйте папку `src/` целиком в директорию `libraries` вашей Arduino IDE.
+4. Откройте `examples/chat_local/chat_local.ino`.
+5. Укажите параметры сети (строки в начале файла):
    ```cpp
    const char *ssid       = "Ваш_WiFi";
    const char *password   = "Пароль_WiFi";
-   const char *SERVER_IP  = "IP_Сервера";  // тот же, что LOCAL_IP в server.py
+   const char *SERVER_IP  = "192.168.1.100";  // тот же IP, что LOCAL_IP в server.py
    const int   SERVER_PORT = 8000;
    ```
-5. Выберите плату `ESP32S3 Dev Module`, загрузите прошивку.
+6. Выберите плату **`ESP32S3 Dev Module`** и загрузите прошивку.
+
+> **Где узнать LOCAL_IP?** В Windows выполните `ipconfig` в терминале и найдите строку `IPv4-адрес` для вашего Wi-Fi адаптера.
 
 ---
 
 ## Структура репозитория
 
 ```
-APK-SPPR/
-├── server.py              # FastAPI-сервер (STT → RAG → LLM → TTS)
-├── extract.py             # Утилита извлечения данных
-├── requirements.txt       # Python-зависимости
-├── img/                   # Фото прототипа и схемы подключения
+apk-sppr/
+├── server.py              # FastAPI-сервер (STT → RAG → LLM → TTS + веб-панель)
+├── extract.py             # Утилита просмотра и редактирования базы данных
+├── requirements.txt       # Python-зависимости (pip install -r requirements.txt)
+├── img/                   # Фото прототипа, схемы подключения, скриншоты
 ├── src/                   # Библиотеки I2S-аудио для ESP32
 │   ├── Audio.h / Audio.cpp
 │   ├── I2SAudioPlayer.h / .cpp
 │   └── *_decoder/         # Декодеры AAC, FLAC, MP3, Opus, Vorbis
 └── examples/
     └── chat_local/
-        └── chat_local.ino # Скетч голосового терминала
+        └── chat_local.ino # Прошивка голосового терминала ESP32-S3
 ```
 
 ---
 
 ## Перспективы развития
 
-* **Captive Portal (WiFiManager)** — настройка Wi-Fi без перепрошивки.
-* **OTA-обновления** — обновление прошивки по воздуху.
-* **Полный офлайн-режим** — замена облачных API на локальные модели (Whisper Local + Ollama + Piper TTS).
-* **Расширение базы данных** — аналитика продаж, учёт поставок, уведомления о критических остатках.
+- **Captive Portal (WiFiManager)** — настройка Wi-Fi без перепрошивки кода.
+- **OTA-обновления** — обновление прошивки по воздуху.
+- **Полный офлайн-режим** — замена облачных API на локальные модели (Whisper.cpp + Ollama + Piper TTS) для работы без интернета.
+- **Расширение базы данных** — аналитика продаж, учёт поставок, уведомления о критических остатках.
