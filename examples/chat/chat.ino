@@ -33,8 +33,8 @@
 #define I2S_SLOT_MASK I2S_STD_SLOT_LEFT
 
 // WiFi settings
-const char* ssid = "realmeRZ";
-const char* password = "zxcvbnmz";
+const char* ssid = "";
+const char* password = "";
 
 
 // Global audio variable declaration for TTS playback
@@ -46,7 +46,7 @@ Audio audio;
 
 // Option 2: Use custom API key and URL (uncomment if using custom configuration)
 //OpenAI apiBaseUrl : "https://api.openai.com"
-const char* apiKey = "sk-FuDriqpnHo2B8tgbAu0Gn802J65Giamx"; 
+const char* apiKey = ""; 
 const char* apiBaseUrl = "https://openai.api.proxyapi.ru";
 ArduinoGPTChat gptChat(apiKey, apiBaseUrl);
 
