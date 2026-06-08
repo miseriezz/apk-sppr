@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+ai_env/
+venv/
+.env
+
+# База данных (создаётся автоматически при первом запуске)
+business.db
+
+# Временные аудио-файлы (генерируются сервером)
+temp_audio/*.wav
+static_audio/*.mp3
+
+# Системный мусор
+*.stackdump
+bash.exe.stackdump
+Thumbs.db
+.DS_Store
+
+# Личные и служебные папки
+thesis/
+docs/
+.agent/
+
+# Arduino build
+/examples/*/build/
