@@ -9,11 +9,11 @@
 // ==========================================
 // НАСТРОЙКИ СЕТИ И СЕРВЕРА
 // ==========================================
-const char *ssid = "realmeRZ";
-const char *password = "zxcvbnmz";
+const char *ssid = "";
+const char *password = "";
 
 // IP-адрес вашего локального Python-сервера (без http://)
-const char *SERVER_IP = "89.22.225.178";
+const char *SERVER_IP = "";
 // Порт вашего локального Python-сервера
 const int SERVER_PORT = 8000;
 
